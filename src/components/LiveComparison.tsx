@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Play, RefreshCw, User, AlertCircle } from 'lucide-react';
+import { Zap, Play, RefreshCw, User, AlertCircle, Key } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface Persona {
@@ -28,14 +29,52 @@ interface Response {
 
 const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => {
   const [scenario, setScenario] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [responses, setResponses] = useState<Response[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+
+  const callGeminiAPI = async (persona: Persona, userPrompt: string): Promise<string> => {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `${persona.systemPrompt}\n\nUser: ${userPrompt}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API call failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.candidates[0]?.content?.parts[0]?.text || 'No response generated';
+  };
 
   const runComparison = async () => {
     if (!scenario.trim()) {
       toast({
         title: "No scenario provided",
         description: "Please enter a scenario or question to test."
+      });
+      return;
+    }
+
+    if (!apiKey.trim()) {
+      toast({
+        title: "API key required",
+        description: "Please enter your Gemini API key to proceed."
       });
       return;
     }
@@ -48,33 +87,14 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
     }));
     setResponses(initialResponses);
 
-    // Since we can't use real Claude API without proper setup,
-    // we'll simulate responses for demo purposes
-    const simulateResponse = async (persona: Persona): Promise<string> => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
-      
-      // Generate a simulated response based on persona name
-      const responses = {
-        'The Pragmatist': "Here's a data-driven approach based on efficiency and measurable outcomes...",
-        'The Romantic': "Let me share something from the heart that speaks to the beauty of this situation...",
-        'The Cynic': "Let's be realistic here - most people won't tell you the harsh truth, but I will...",
-        'The Therapist': "I hear what you're asking, and I want to explore the deeper feelings behind this...",
-        'The Comedian': "Okay, but first - can we talk about how this is basically every person ever? *laughs*...",
-        'The Optimist': "This is actually such an exciting opportunity! Here's why this could be amazing..."
-      };
-      
-      return responses[persona.name as keyof typeof responses] || 
-        `As ${persona.name}, I approach this thoughtfully and offer my unique perspective...`;
-    };
-
     try {
       // Run all persona responses in parallel
       const responsePromises = personas.map(async (persona) => {
         try {
-          const content = await simulateResponse(persona);
+          const content = await callGeminiAPI(persona, scenario);
           return { personaId: persona.id, content, loading: false };
         } catch (error) {
+          console.error(`Error for persona ${persona.name}:`, error);
           return { 
             personaId: persona.id, 
             content: '', 
@@ -88,9 +108,10 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
       setResponses(results);
       
     } catch (error) {
+      console.error('Error in comparison:', error);
       toast({
         title: "Error",
-        description: "Failed to generate responses. Please try again."
+        description: "Failed to generate responses. Please check your API key and try again."
       });
     } finally {
       setIsRunning(false);
@@ -115,6 +136,26 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* API Key Input */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Key className="w-5 h-5 text-purple-600" />
+              <label className="font-semibold text-gray-700">
+                Gemini API Key
+              </label>
+            </div>
+            <Input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Enter your Gemini API key..."
+              disabled={isRunning}
+            />
+            <p className="text-xs text-gray-500">
+              Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">Google AI Studio</a>
+            </p>
+          </div>
+
           {/* Scenario Input */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-2">
@@ -136,7 +177,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
           <div className="flex gap-3 justify-center">
             <Button
               onClick={runComparison}
-              disabled={isRunning || !scenario.trim()}
+              disabled={isRunning || !scenario.trim() || !apiKey.trim()}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3"
             >
               {isRunning ? (
@@ -210,7 +251,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
                   
                   {response?.content && !response.loading && (
                     <div className="prose prose-sm max-w-none">
-                      <p className="text-gray-700 leading-relaxed">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                         {response.content}
                       </p>
                     </div>
