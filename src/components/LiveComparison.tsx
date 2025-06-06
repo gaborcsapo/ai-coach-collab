@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -106,8 +105,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
   const runComparison = async () => {
     if (!scenario.trim()) {
       toast({
-        title: "No scenario provided",
-        description: "Please enter a scenario or question to test."
+        title: "Need a scenario, babe! 💕",
+        description: "Give these contestants something juicy to respond to."
       });
       return;
     }
@@ -121,7 +120,6 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
     setResponses(initialResponses);
 
     try {
-      // Run all persona responses in parallel
       const responsePromises = personas.map(async (persona) => {
         try {
           const content = await generateResponse(persona, scenario);
@@ -143,8 +141,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
     } catch (error) {
       console.error('Error in runComparison:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate responses. Please check your API key and try again."
+        title: "Technical difficulties! 😅",
+        description: "Check your API key and try again, love."
       });
     } finally {
       setIsRunning(false);
@@ -158,30 +156,30 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
 
   return (
     <div className="space-y-6">
-      <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+      <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
         <CardHeader>
-          <CardTitle className="text-2xl text-center flex items-center justify-center gap-2">
-            <Zap className="w-6 h-6" />
-            Live Prompt-Off Arena
+          <CardTitle className="text-3xl text-center flex items-center justify-center gap-2 text-white font-black">
+            <Zap className="w-8 h-8 text-yellow-400" />
+            The Battle Begins 🔥
           </CardTitle>
-          <p className="text-gray-600 text-center">
-            Watch your AI coaches respond to the same scenario simultaneously using {apiConfig.provider === 'gemini' ? 'Google Gemini' : 'Anthropic Claude'}
+          <p className="text-white/80 text-center font-medium text-lg">
+            Watch your AI hotties fight for your heart using {apiConfig.provider === 'gemini' ? 'Google Gemini 💎' : 'Anthropic Claude ✨'}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Scenario Input */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-2">
-              <User className="w-5 h-5 text-purple-600" />
-              <label className="font-semibold text-gray-700">
-                The "Guinea Pig" Scenario
+              <User className="w-6 h-6 text-pink-400" />
+              <label className="font-bold text-white text-lg">
+                The Challenge 💋
               </label>
             </div>
             <Textarea
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
-              placeholder="Enter a scenario or question that all personas will respond to..."
-              className="min-h-24"
+              placeholder="Drop the tea... Ask them anything! 'What's your biggest red flag?' or 'Convince me to choose you over everyone else' 😈"
+              className="min-h-24 bg-white/10 border-white/30 text-white placeholder:text-white/60 font-medium"
               disabled={isRunning}
             />
           </div>
@@ -191,17 +189,17 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
             <Button
               onClick={runComparison}
               disabled={isRunning || !scenario.trim()}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3"
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-4 text-lg font-bold shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/30"
             >
               {isRunning ? (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Running Comparison...
+                  <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                  Drama Unfolding...
                 </>
               ) : (
                 <>
-                  <Play className="w-4 h-4 mr-2" />
-                  Start Live Comparison
+                  <Play className="w-5 h-5 mr-2" />
+                  Start the Drama! 🎭
                 </>
               )}
             </Button>
@@ -211,8 +209,9 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
                 onClick={resetComparison}
                 variant="outline"
                 disabled={isRunning}
+                className="bg-white/10 border-white/30 text-white hover:bg-white/20 font-bold"
               >
-                Reset
+                Reset Round
               </Button>
             )}
           </div>
@@ -222,8 +221,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
       {/* Personas Display */}
       <div className="grid gap-4">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <Badge variant="outline" className="text-sm">
-            {personas.length} AI Coaches Ready
+          <Badge variant="outline" className="text-sm bg-purple-500/20 border-purple-300/50 text-purple-200 font-bold">
+            {personas.length} Contestants Ready to Serve 🔥
           </Badge>
         </div>
         
@@ -232,31 +231,31 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
             const response = responses.find(r => r.personaId === persona.id);
             
             return (
-              <Card key={persona.id} className="border-2 border-gray-200">
+              <Card key={persona.id} className="border-2 border-white/30 bg-white/5 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full ${persona.color}`}></div>
-                    <CardTitle className="text-lg">{persona.name}</CardTitle>
+                    <div className={`w-5 h-5 rounded-full ${persona.color} shadow-lg`}></div>
+                    <CardTitle className="text-xl text-white font-bold">{persona.name}</CardTitle>
                     {response?.loading && (
-                      <RefreshCw className="w-4 h-4 animate-spin text-purple-600" />
+                      <RefreshCw className="w-5 h-5 animate-spin text-pink-400" />
                     )}
                   </div>
                 </CardHeader>
                 <CardContent>
                   {!response && (
-                    <div className="text-gray-400 italic p-4 text-center">
-                      Waiting for scenario...
+                    <div className="text-white/60 italic p-4 text-center font-medium">
+                      Waiting for the tea to spill... ☕
                     </div>
                   )}
                   
                   {response?.loading && (
                     <div className="flex items-center justify-center p-8">
-                      <div className="text-purple-600">Generating response...</div>
+                      <div className="text-pink-400 font-bold">Crafting the perfect response... 💅</div>
                     </div>
                   )}
                   
                   {response?.error && (
-                    <div className="flex items-center gap-2 text-red-600 p-4">
+                    <div className="flex items-center gap-2 text-red-400 p-4 font-medium">
                       <AlertCircle className="w-4 h-4" />
                       {response.error}
                     </div>
@@ -264,7 +263,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
                   
                   {response?.content && !response.loading && (
                     <div className="prose prose-sm max-w-none">
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-white/90 leading-relaxed whitespace-pre-wrap font-medium bg-white/5 p-4 rounded-lg border border-white/20">
                         {response.content}
                       </p>
                     </div>
@@ -281,9 +280,9 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
         <div className="text-center pt-6">
           <Button 
             onClick={onNext}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 text-lg"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-4 text-xl font-bold shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/30"
           >
-            Proceed to Debrief
+            Time for the After-Party! 🍾
           </Button>
         </div>
       )}
