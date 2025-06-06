@@ -14,8 +14,14 @@ interface Persona {
   color: string;
 }
 
+interface ApiConfig {
+  provider: 'gemini' | 'claude';
+  apiKey: string;
+}
+
 interface LiveComparisonProps {
   personas: Persona[];
+  apiConfig: ApiConfig;
   onNext: () => void;
 }
 
@@ -26,10 +32,76 @@ interface Response {
   error?: string;
 }
 
-const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => {
+const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, onNext }) => {
   const [scenario, setScenario] = useState('');
   const [responses, setResponses] = useState<Response[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+
+  const callGeminiAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiConfig.apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `${systemPrompt}\n\nUser: ${userMessage}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 1000,
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Gemini API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
+  };
+
+  const callClaudeAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiConfig.apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: userMessage
+        }]
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Claude API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    return data.content?.[0]?.text || 'No response generated';
+  };
+
+  const generateResponse = async (persona: Persona, userMessage: string): Promise<string> => {
+    if (apiConfig.provider === 'gemini') {
+      return await callGeminiAPI(persona.systemPrompt, userMessage);
+    } else {
+      return await callClaudeAPI(persona.systemPrompt, userMessage);
+    }
+  };
 
   const runComparison = async () => {
     if (!scenario.trim()) {
@@ -48,38 +120,19 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
     }));
     setResponses(initialResponses);
 
-    // Since we can't use real Claude API without proper setup,
-    // we'll simulate responses for demo purposes
-    const simulateResponse = async (persona: Persona): Promise<string> => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000));
-      
-      // Generate a simulated response based on persona name
-      const responses = {
-        'The Pragmatist': "Here's a data-driven approach based on efficiency and measurable outcomes...",
-        'The Romantic': "Let me share something from the heart that speaks to the beauty of this situation...",
-        'The Cynic': "Let's be realistic here - most people won't tell you the harsh truth, but I will...",
-        'The Therapist': "I hear what you're asking, and I want to explore the deeper feelings behind this...",
-        'The Comedian': "Okay, but first - can we talk about how this is basically every person ever? *laughs*...",
-        'The Optimist': "This is actually such an exciting opportunity! Here's why this could be amazing..."
-      };
-      
-      return responses[persona.name as keyof typeof responses] || 
-        `As ${persona.name}, I approach this thoughtfully and offer my unique perspective...`;
-    };
-
     try {
       // Run all persona responses in parallel
       const responsePromises = personas.map(async (persona) => {
         try {
-          const content = await simulateResponse(persona);
+          const content = await generateResponse(persona, scenario);
           return { personaId: persona.id, content, loading: false };
         } catch (error) {
+          console.error(`Error generating response for ${persona.name}:`, error);
           return { 
             personaId: persona.id, 
             content: '', 
             loading: false, 
-            error: 'Failed to generate response' 
+            error: error instanceof Error ? error.message : 'Failed to generate response' 
           };
         }
       });
@@ -88,9 +141,10 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
       setResponses(results);
       
     } catch (error) {
+      console.error('Error in runComparison:', error);
       toast({
         title: "Error",
-        description: "Failed to generate responses. Please try again."
+        description: "Failed to generate responses. Please check your API key and try again."
       });
     } finally {
       setIsRunning(false);
@@ -111,7 +165,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
             Live Prompt-Off Arena
           </CardTitle>
           <p className="text-gray-600 text-center">
-            Watch your AI coaches respond to the same scenario simultaneously
+            Watch your AI coaches respond to the same scenario simultaneously using {apiConfig.provider === 'gemini' ? 'Google Gemini' : 'Anthropic Claude'}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -210,7 +264,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
                   
                   {response?.content && !response.loading && (
                     <div className="prose prose-sm max-w-none">
-                      <p className="text-gray-700 leading-relaxed">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                         {response.content}
                       </p>
                     </div>

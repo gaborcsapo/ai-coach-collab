@@ -7,17 +7,23 @@ import { Users, Zap, MessageSquare } from 'lucide-react';
 import PersonaCreation from '@/components/PersonaCreation';
 import LiveComparison from '@/components/LiveComparison';
 
+interface ApiConfig {
+  provider: 'gemini' | 'claude';
+  apiKey: string;
+}
+
 const Index = () => {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [personas, setPersonas] = useState([]);
+  const [apiConfig, setApiConfig] = useState<ApiConfig>({ provider: 'gemini', apiKey: '' });
 
   const phases = [
     {
       title: "The Persona Forge",
-      subtitle: "Craft System Prompts",
+      subtitle: "Craft System Prompts & Configure AI",
       icon: Users,
       duration: "20 minutes",
-      description: "Create detailed system prompts that define your AI coach's personality"
+      description: "Create detailed system prompts that define your AI coach's personality and configure your AI provider"
     },
     {
       title: "The Live Prompt-Off",
@@ -35,8 +41,9 @@ const Index = () => {
     }
   ];
 
-  const handlePersonasUpdate = (newPersonas) => {
+  const handlePersonasUpdate = (newPersonas, newApiConfig) => {
     setPersonas(newPersonas);
+    setApiConfig(newApiConfig);
   };
 
   return (
@@ -87,6 +94,7 @@ const Index = () => {
           {currentPhase === 1 && (
             <LiveComparison 
               personas={personas}
+              apiConfig={apiConfig}
               onNext={() => setCurrentPhase(2)}
             />
           )}
