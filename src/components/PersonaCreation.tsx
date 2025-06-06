@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,13 +23,13 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
   const [personas, setPersonas] = useState<Persona[]>([
     {
       id: '1',
-      name: 'The Pragmatist',
+      name: '',
       systemPrompt: '',
       color: 'bg-blue-500'
     },
     {
       id: '2',
-      name: 'The Romantic',
+      name: '',
       systemPrompt: '',
       color: 'bg-pink-500'
     }

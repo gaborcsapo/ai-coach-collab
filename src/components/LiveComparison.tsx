@@ -31,25 +31,6 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
   const [responses, setResponses] = useState<Response[]>([]);
   const [isRunning, setIsRunning] = useState(false);
 
-  const exampleScenarios = [
-    {
-      title: "Dating Bio Writer",
-      content: "This is 'Alex.' Facts: a nurse who works night shifts, loves gardening, and is training for a half-marathon. Write a 150-word dating app bio for Alex."
-    },
-    {
-      title: "First Date Ideas",
-      content: "I'm finding it hard to plan interesting first dates that aren't just 'grabbing a drink.' Give me three creative and affordable first date ideas."
-    },
-    {
-      title: "Career Advice",
-      content: "I'm 25 and feeling stuck in my current job, but I'm afraid to make a change. I have student loans and rent to pay. Should I stay safe or take a risk?"
-    },
-    {
-      title: "Workout Motivation",
-      content: "I keep starting workout routines but never stick to them for more than two weeks. How can I finally build a consistent exercise habit?"
-    }
-  ];
-
   const runComparison = async () => {
     if (!scenario.trim()) {
       toast({
@@ -149,27 +130,6 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, onNext }) => 
               className="min-h-24"
               disabled={isRunning}
             />
-          </div>
-
-          {/* Example Scenarios */}
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-700">Quick Start Examples:</h3>
-            <div className="grid gap-2">
-              {exampleScenarios.map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="text-left h-auto p-3 justify-start"
-                  onClick={() => setScenario(example.content)}
-                  disabled={isRunning}
-                >
-                  <div>
-                    <div className="font-medium text-purple-600">{example.title}</div>
-                    <div className="text-sm text-gray-600 mt-1">{example.content}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
           </div>
 
           {/* Action Buttons */}
