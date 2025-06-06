@@ -130,10 +130,10 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                   setApiConfig({...apiConfig, provider: value})
                 }
               >
-                <SelectTrigger className="bg-white/10 border-white/30 text-white">
+                <SelectTrigger className="bg-white border-gray-300 text-black">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="gemini">Google Gemini API 🔥</SelectItem>
                   <SelectItem value="claude">Anthropic Claude API ✨</SelectItem>
                 </SelectContent>
@@ -147,7 +147,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                 placeholder="Your secret key... 🤫"
                 value={apiConfig.apiKey}
                 onChange={(e) => setApiConfig({...apiConfig, apiKey: e.target.value})}
-                className="bg-white/10 border-white/30 text-white placeholder:text-white/60"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
               />
             </div>
           </div>
@@ -212,7 +212,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                       placeholder="The Flirt, The Mysterious One, The Comedian..."
                       value={persona.name}
                       onChange={(e) => updatePersona(persona.id, 'name', e.target.value)}
-                      className="bg-white/10 border-white/30 text-white placeholder:text-white/60"
+                      className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                     />
                   </div>
                   
@@ -221,7 +221,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                     <Textarea
                       id={`prompt-${persona.id}`}
                       placeholder="Craft their vibe... Are they the confident charmer? The witty rebel? The hopeless romantic? Give them a backstory, quirks, and that special something that makes hearts skip beats..."
-                      className="min-h-32 bg-white/10 border-white/30 text-white placeholder:text-white/60"
+                      className="min-h-32 bg-white border-gray-300 text-black placeholder:text-gray-500"
                       value={persona.systemPrompt}
                       onChange={(e) => updatePersona(persona.id, 'systemPrompt', e.target.value)}
                     />

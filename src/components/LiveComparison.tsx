@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -179,7 +180,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
               placeholder="Drop the tea... Ask them anything! 'What's your biggest red flag?' or 'Convince me to choose you over everyone else' 😈"
-              className="min-h-24 bg-white/10 border-white/30 text-white placeholder:text-white/60 font-medium"
+              className="min-h-24 bg-white border-gray-300 text-black placeholder:text-gray-500 font-medium"
               disabled={isRunning}
             />
           </div>
@@ -263,7 +264,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
                   
                   {response?.content && !response.loading && (
                     <div className="prose prose-sm max-w-none">
-                      <p className="text-white/90 leading-relaxed whitespace-pre-wrap font-medium bg-white/5 p-4 rounded-lg border border-white/20">
+                      <p className="text-black leading-relaxed whitespace-pre-wrap font-medium bg-white p-4 rounded-lg border border-gray-300 shadow-sm">
                         {response.content}
                       </p>
                     </div>
