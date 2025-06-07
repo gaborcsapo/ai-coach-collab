@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,7 +38,15 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
   const [isRunning, setIsRunning] = useState(false);
 
   const callGeminiAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
-    const enhancedSystemPrompt = `${systemPrompt} Keep the responses to a single short paragraph, 2-3 sentences. Make your response unhinged, conversational and easy-to-understand.`;
+    const systemPromptTemplate = `You are an expert dating coach.
+
+### Persona
+Your personality is: ${systemPrompt}
+
+### Core Directives
+1.  **Brevity:** Your entire response MUST be concise and strictly limited to a maximum of 3 sentences. Do not exceed this limit.
+2.  **Tone:** Embody your persona. Be conversational, easy-to-understand, and slightly unhinged.
+3.  **Task:** Directly address the user's dating scenario. Do not add conversational filler, greetings, or sign-offs.`;
     
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiConfig.apiKey}`, {
       method: 'POST',
@@ -52,14 +61,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
         }],
         systemInstruction: {
           parts: [{
-            text: enhancedSystemPrompt
+            text: systemPromptTemplate
           }]
-        },
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1000,
         },
         safetySettings: [
           {
