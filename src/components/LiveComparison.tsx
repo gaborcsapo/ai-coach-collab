@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +37,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
   const [isRunning, setIsRunning] = useState(false);
 
   const callGeminiAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiConfig.apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiConfig.apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,8 +50,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
         }],
         generationConfig: {
           temperature: 0.7,
-          topK: 1,
-          topP: 1,
+          topK: 40,
+          topP: 0.95,
           maxOutputTokens: 1000,
         }
       }),
@@ -68,31 +67,8 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
   };
 
   const callClaudeAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiConfig.apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{
-          role: 'user',
-          content: userMessage
-        }]
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Claude API error: ${errorData.error?.message || 'Unknown error'}`);
-    }
-
-    const data = await response.json();
-    return data.content?.[0]?.text || 'No response generated';
+    // Claude API cannot be called directly from the browser due to CORS restrictions
+    throw new Error('Claude API cannot be called directly from the browser due to CORS restrictions. Please use Gemini API instead, or connect to Supabase to use Claude via Edge Functions.');
   };
 
   const generateResponse = async (persona: Persona, userMessage: string): Promise<string> => {
@@ -108,6 +84,15 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
       toast({
         title: "Need a scenario, babe! 💕",
         description: "Give these contestants something juicy to respond to."
+      });
+      return;
+    }
+
+    if (apiConfig.provider === 'claude') {
+      toast({
+        title: "Claude Not Available! 😅",
+        description: "Claude API has CORS restrictions. Please switch to Gemini API for now.",
+        variant: "destructive"
       });
       return;
     }

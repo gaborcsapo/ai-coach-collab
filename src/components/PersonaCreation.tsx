@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -135,9 +134,14 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                 </SelectTrigger>
                 <SelectContent className="bg-white">
                   <SelectItem value="gemini">Google Gemini API 🔥</SelectItem>
-                  <SelectItem value="claude">Anthropic Claude API ✨</SelectItem>
+                  <SelectItem value="claude">Anthropic Claude API ⚠️ (Browser Restricted)</SelectItem>
                 </SelectContent>
               </Select>
+              {apiConfig.provider === 'claude' && (
+                <p className="text-yellow-300 text-sm font-medium">
+                  ⚠️ Claude API has CORS restrictions in browsers. Use Gemini for now!
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="apiKey" className="text-white font-semibold">API Key</Label>
