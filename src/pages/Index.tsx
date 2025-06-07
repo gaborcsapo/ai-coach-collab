@@ -8,7 +8,7 @@ import PersonaCreation from '@/components/PersonaCreation';
 import LiveComparison from '@/components/LiveComparison';
 
 interface ApiConfig {
-  provider: 'gemini' | 'claude';
+  provider: 'gemini';
   apiKey: string;
 }
 
@@ -19,25 +19,25 @@ const Index = () => {
 
   const phases = [
     {
-      title: "The Persona Forge 🔥",
-      subtitle: "Create Your AI Crushes",
+      title: "The Persona Forge 🎯",
+      subtitle: "Craft Your AI Dating Coaches",
       icon: Users,
       duration: "20 minutes",
-      description: "Design the perfect AI personalities that will make hearts race and sparks fly"
+      description: "Design AI personalities that embody different values and worldviews about dating"
     },
     {
-      title: "The Live Prompt-Off 💋",
-      subtitle: "Battle of the Bots",
+      title: "The Live Prompt-Off 💬",
+      subtitle: "Compare AI Responses",
       icon: Zap,
       duration: "20 minutes",
-      description: "Watch your AI hotties compete for your attention in real-time"
+      description: "Watch how different system prompts shape AI behavior and advice in real-time"
     },
     {
-      title: "The After-Party ✨",
-      subtitle: "Spill the Tea",
+      title: "The Workshop Debrief ✨",
+      subtitle: "Analyze & Reflect",
       icon: MessageSquare,
       duration: "15 minutes",
-      description: "Analyze the drama and crown your AI soulmate"
+      description: "Explore how prompts embed values and what this means for AI-human interaction"
     }
   ];
 
@@ -83,7 +83,7 @@ const Index = () => {
                 }`}
               >
                 <phase.icon className="w-4 h-4 mr-2" />
-                Round {index + 1}
+                Part {index + 1}
               </Button>
             ))}
           </div>
@@ -110,36 +110,36 @@ const Index = () => {
             <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
               <CardHeader>
                 <CardTitle className="text-3xl text-center text-white font-black">
-                  The After-Party Debrief 🍾
+                  Workshop Debrief & Analysis 🧠
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-pink-200">Truth or Dare Questions 💕</h3>
+                  <h3 className="text-xl font-bold text-pink-200">Discussion Questions 💭</h3>
                   <ul className="space-y-3 text-white/90">
                     <li className="flex items-start">
-                      <span className="text-pink-400 mr-2 text-xl">💋</span>
-                      Which AI gave you butterflies? What made them irresistible?
+                      <span className="text-pink-400 mr-2 text-xl">🎯</span>
+                      Which AI coach gave advice that resonated most with you? What values did you notice?
                     </li>
                     <li className="flex items-start">
-                      <span className="text-pink-400 mr-2 text-xl">🔥</span>
-                      Which responses felt authentic vs. totally scripted?
+                      <span className="text-pink-400 mr-2 text-xl">🔍</span>
+                      How did different system prompts shape the tone and content of each response?
                     </li>
                     <li className="flex items-start">
-                      <span className="text-pink-400 mr-2 text-xl">✨</span>
-                      If these were real people, who would you swipe right on?
+                      <span className="text-pink-400 mr-2 text-xl">⚖️</span>
+                      Which responses felt most authentic vs. scripted? What made the difference?
                     </li>
                     <li className="flex items-start">
-                      <span className="text-pink-400 mr-2 text-xl">💎</span>
-                      Which personality traits came through strongest in each response?
+                      <span className="text-pink-400 mr-2 text-xl">🤖</span>
+                      What does this experiment reveal about how we embed our own biases into AI?
                     </li>
                   </ul>
                 </div>
                 
                 <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 p-6 rounded-xl border border-pink-300/30 backdrop-blur-sm">
-                  <h3 className="text-xl font-bold text-pink-200 mb-3">The Hot Take 🌶️</h3>
+                  <h3 className="text-xl font-bold text-pink-200 mb-3">Key Takeaway 🔑</h3>
                   <p className="text-white/90 text-lg leading-relaxed font-medium">
-                    You just proved that personality is everything. The right prompt doesn't just create an AI tool—it creates an AI that feels real, relatable, and ready to steal your heart. 
+                    You've just witnessed how the "architect prompt"—the system instructions we give AI—fundamentally shapes its personality, values, and advice. This experiment reveals that AI isn't neutral; it reflects the worldview we embed in it. As AI becomes more prevalent in personal decisions like dating, understanding this power becomes crucial.
                   </p>
                 </div>
                 
@@ -148,7 +148,7 @@ const Index = () => {
                     onClick={() => setCurrentPhase(0)}
                     className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-4 text-xl font-bold shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/30"
                   >
-                    Find New Love 💕
+                    Run Another Experiment 🔬
                   </Button>
                 </div>
               </CardContent>

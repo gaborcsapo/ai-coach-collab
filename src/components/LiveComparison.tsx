@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +15,7 @@ interface Persona {
 }
 
 interface ApiConfig {
-  provider: 'gemini' | 'claude';
+  provider: 'gemini';
   apiKey: string;
 }
 
@@ -66,33 +67,15 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
     return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
   };
 
-  const callClaudeAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
-    // Claude API cannot be called directly from the browser due to CORS restrictions
-    throw new Error('Claude API cannot be called directly from the browser due to CORS restrictions. Please use Gemini API instead, or connect to Supabase to use Claude via Edge Functions.');
-  };
-
   const generateResponse = async (persona: Persona, userMessage: string): Promise<string> => {
-    if (apiConfig.provider === 'gemini') {
-      return await callGeminiAPI(persona.systemPrompt, userMessage);
-    } else {
-      return await callClaudeAPI(persona.systemPrompt, userMessage);
-    }
+    return await callGeminiAPI(persona.systemPrompt, userMessage);
   };
 
   const runComparison = async () => {
     if (!scenario.trim()) {
       toast({
-        title: "Need a scenario, babe! 💕",
-        description: "Give these contestants something juicy to respond to."
-      });
-      return;
-    }
-
-    if (apiConfig.provider === 'claude') {
-      toast({
-        title: "Claude Not Available! 😅",
-        description: "Claude API has CORS restrictions. Please switch to Gemini API for now.",
-        variant: "destructive"
+        title: "Need a dating scenario! 💕",
+        description: "Give your AI coaches something to respond to."
       });
       return;
     }
@@ -128,7 +111,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
       console.error('Error in runComparison:', error);
       toast({
         title: "Technical difficulties! 😅",
-        description: "Check your API key and try again, love."
+        description: "Check your API key and try again."
       });
     } finally {
       setIsRunning(false);
@@ -146,10 +129,10 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
         <CardHeader>
           <CardTitle className="text-3xl text-center flex items-center justify-center gap-2 text-white font-black">
             <Zap className="w-8 h-8 text-yellow-400" />
-            The Battle Begins 🔥
+            The Live Experiment 🔬
           </CardTitle>
           <p className="text-white/80 text-center font-medium text-lg">
-            Watch your AI hotties fight for your heart using {apiConfig.provider === 'gemini' ? 'Google Gemini 💎' : 'Anthropic Claude ✨'}
+            Watch how different system prompts shape AI behavior and advice
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -158,13 +141,13 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
             <div className="flex items-center gap-2 mb-2">
               <User className="w-6 h-6 text-pink-400" />
               <label className="font-bold text-white text-lg">
-                The Challenge 💋
+                Dating Scenario or Question 💭
               </label>
             </div>
             <Textarea
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
-              placeholder="Drop the tea... Ask them anything! 'What's your biggest red flag?' or 'Convince me to choose you over everyone else' 😈"
+              placeholder="Try: 'I've been dating someone for 3 months but they haven't introduced me to their friends. Should I be worried?' or 'Write a dating profile bio for someone who loves hiking and works as a teacher.'"
               className="min-h-24 bg-white border-gray-300 text-black placeholder:text-gray-500 font-medium"
               disabled={isRunning}
             />
@@ -180,12 +163,12 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
               {isRunning ? (
                 <>
                   <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                  Drama Unfolding...
+                  Coaches Responding...
                 </>
               ) : (
                 <>
                   <Play className="w-5 h-5 mr-2" />
-                  Start the Drama! 🎭
+                  Get AI Advice! 🎯
                 </>
               )}
             </Button>
@@ -197,7 +180,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
                 disabled={isRunning}
                 className="bg-white/10 border-white/30 text-white hover:bg-white/20 font-bold"
               >
-                Reset Round
+                Try New Scenario
               </Button>
             )}
           </div>
@@ -208,7 +191,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
       <div className="grid gap-4">
         <div className="flex items-center justify-center gap-2 mb-4">
           <Badge variant="outline" className="text-sm bg-purple-500/20 border-purple-300/50 text-purple-200 font-bold">
-            {personas.length} Contestants Ready to Serve 🔥
+            {personas.length} AI Dating Coaches Ready 🤖
           </Badge>
         </div>
         
@@ -230,13 +213,13 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
                 <CardContent>
                   {!response && (
                     <div className="text-white/60 italic p-4 text-center font-medium">
-                      Waiting for the tea to spill... ☕
+                      Waiting for your question... 🤔
                     </div>
                   )}
                   
                   {response?.loading && (
                     <div className="flex items-center justify-center p-8">
-                      <div className="text-pink-400 font-bold">Crafting the perfect response... 💅</div>
+                      <div className="text-pink-400 font-bold">Crafting response based on values... 💭</div>
                     </div>
                   )}
                   
@@ -268,7 +251,7 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
             onClick={onNext}
             className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-4 text-xl font-bold shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/30"
           >
-            Time for the After-Party! 🍾
+            Analyze Results! 📊
           </Button>
         </div>
       )}

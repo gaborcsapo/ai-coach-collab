@@ -1,10 +1,10 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Users, Key, Bot } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -17,7 +17,7 @@ interface Persona {
 }
 
 interface ApiConfig {
-  provider: 'gemini' | 'claude';
+  provider: 'gemini';
   apiKey: string;
 }
 
@@ -51,8 +51,8 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
   const addPersona = () => {
     if (personas.length >= 8) {
       toast({
-        title: "Too many hotties! 🔥",
-        description: "Keep it exclusive - max 8 personas for the ultimate showdown."
+        title: "Maximum coaches reached! 🎯",
+        description: "Keep it manageable - max 8 AI coaches for meaningful comparison."
       });
       return;
     }
@@ -69,8 +69,8 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
   const removePersona = (id: string) => {
     if (personas.length <= 2) {
       toast({
-        title: "Need at least 2 contestants! 💔",
-        description: "Keep the drama alive with minimum 2 personas."
+        title: "Need at least 2 coaches! 💼",
+        description: "Keep the comparison meaningful with minimum 2 personas."
       });
       return;
     }
@@ -88,8 +88,8 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
     
     if (incompletePersonas.length > 0) {
       toast({
-        title: "Incomplete profiles! 😱",
-        description: "Give each persona a name and personality before the show starts."
+        title: "Incomplete coach profiles! 📝",
+        description: "Give each AI coach a name and detailed system prompt."
       });
       return;
     }
@@ -97,7 +97,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
     if (!apiConfig.apiKey.trim()) {
       toast({
         title: "Missing API Key! 🔑",
-        description: "Need that secret sauce to make the magic happen."
+        description: "Need your Gemini API key to power the experiment."
       });
       return;
     }
@@ -113,47 +113,26 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2 text-white font-bold">
             <Key className="w-6 h-6 text-pink-400" />
-            Behind the Scenes Setup 🎬
+            Workshop Setup 🔧
           </CardTitle>
           <p className="text-white/80 font-medium">
-            Configure your AI magic before the contestants enter the villa
+            Configure your Google Gemini API to power the AI experiment
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="provider" className="text-white font-semibold">AI Provider</Label>
-              <Select 
-                value={apiConfig.provider} 
-                onValueChange={(value: 'gemini' | 'claude') => 
-                  setApiConfig({...apiConfig, provider: value})
-                }
-              >
-                <SelectTrigger className="bg-white border-gray-300 text-black">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="gemini">Google Gemini API 🔥</SelectItem>
-                  <SelectItem value="claude">Anthropic Claude API ⚠️ (Browser Restricted)</SelectItem>
-                </SelectContent>
-              </Select>
-              {apiConfig.provider === 'claude' && (
-                <p className="text-yellow-300 text-sm font-medium">
-                  ⚠️ Claude API has CORS restrictions in browsers. Use Gemini for now!
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="apiKey" className="text-white font-semibold">API Key</Label>
-              <Input
-                id="apiKey"
-                type="password"
-                placeholder="Your secret key... 🤫"
-                value={apiConfig.apiKey}
-                onChange={(e) => setApiConfig({...apiConfig, apiKey: e.target.value})}
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="apiKey" className="text-white font-semibold">Gemini API Key</Label>
+            <Input
+              id="apiKey"
+              type="password"
+              placeholder="Your Google Gemini API key..."
+              value={apiConfig.apiKey}
+              onChange={(e) => setApiConfig({...apiConfig, apiKey: e.target.value})}
+              className="bg-white border-gray-300 text-black placeholder:text-gray-500"
+            />
+            <p className="text-white/70 text-sm">
+              Get your free API key at <span className="text-pink-300 font-medium">ai.google.dev</span>
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -163,16 +142,16 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2 text-white font-bold">
             <Bot className="w-6 h-6 text-purple-400" />
-            Cast Your AI Contestants 💫
+            Design Your AI Dating Coaches 🎭
           </CardTitle>
           <p className="text-white/80 font-medium">
-            Create irresistible personalities that will steal hearts and break the internet
+            Create AI personalities with different values and worldviews about dating and relationships
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <Badge variant="outline" className="text-sm bg-pink-500/20 border-pink-300/50 text-pink-200 font-semibold">
-              {personas.length} Contestants Ready ✨
+              {personas.length} AI Coaches Ready 🤖
             </Badge>
             <Button 
               onClick={addPersona}
@@ -181,7 +160,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
               className="flex items-center gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20 font-semibold"
             >
               <Plus className="w-4 h-4" />
-              Add Contestant
+              Add Coach
             </Button>
           </div>
 
@@ -193,7 +172,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                     <div className="flex items-center gap-3">
                       <div className={`w-5 h-5 rounded-full ${persona.color} shadow-lg`}></div>
                       <h3 className="font-bold text-white text-lg">
-                        Contestant {index + 1} 💋
+                        Coach {index + 1} 🎯
                       </h3>
                     </div>
                     {personas.length > 2 && (
@@ -210,10 +189,10 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`name-${persona.id}`} className="text-white font-semibold">Stage Name</Label>
+                    <Label htmlFor={`name-${persona.id}`} className="text-white font-semibold">Coach Name/Type</Label>
                     <Input
                       id={`name-${persona.id}`}
-                      placeholder="The Flirt, The Mysterious One, The Comedian..."
+                      placeholder="The Pragmatist, The Romantic, The Therapist, The Realist..."
                       value={persona.name}
                       onChange={(e) => updatePersona(persona.id, 'name', e.target.value)}
                       className="bg-white border-gray-300 text-black placeholder:text-gray-500"
@@ -221,10 +200,10 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor={`prompt-${persona.id}`} className="text-white font-semibold">Personality Profile 🔥</Label>
+                    <Label htmlFor={`prompt-${persona.id}`} className="text-white font-semibold">System Prompt (The Coach's "Soul") 🧠</Label>
                     <Textarea
                       id={`prompt-${persona.id}`}
-                      placeholder="Craft their vibe... Are they the confident charmer? The witty rebel? The hopeless romantic? Give them a backstory, quirks, and that special something that makes hearts skip beats..."
+                      placeholder="Define this AI's core values, worldview, and approach to dating advice. What does it believe about relationships? How does it communicate? What's its backstory? Be detailed and specific - this shapes everything the AI will say..."
                       className="min-h-32 bg-white border-gray-300 text-black placeholder:text-gray-500"
                       value={persona.systemPrompt}
                       onChange={(e) => updatePersona(persona.id, 'systemPrompt', e.target.value)}
@@ -241,7 +220,7 @@ const PersonaCreation: React.FC<PersonaCreationProps> = ({ onPersonasUpdate, onN
               className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-4 text-xl font-bold shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-white/30"
             >
               <Users className="w-6 h-6 mr-2" />
-              Let the Games Begin! 🎭
+              Start the Experiment! 🔬
             </Button>
           </div>
         </CardContent>
