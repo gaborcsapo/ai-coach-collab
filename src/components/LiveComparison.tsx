@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +37,9 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
   const [isRunning, setIsRunning] = useState(false);
 
   const callGeminiAPI = async (systemPrompt: string, userMessage: string): Promise<string> => {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiConfig.apiKey}`, {
+    const enhancedSystemPrompt = `${systemPrompt} Keep the responses to a single short paragraph, 2-3 sentences. Make your response unhinged, conversational and easy-to-understand.`;
+    
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiConfig.apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,15 +47,42 @@ const LiveComparison: React.FC<LiveComparisonProps> = ({ personas, apiConfig, on
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `${systemPrompt}\n\nUser: ${userMessage}`
+            text: userMessage
           }]
         }],
+        systemInstruction: {
+          parts: [{
+            text: enhancedSystemPrompt
+          }]
+        },
         generationConfig: {
           temperature: 0.7,
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 1000,
-        }
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_CIVIC_INTEGRITY",
+            threshold: "BLOCK_NONE"
+          }
+        ]
       }),
     });
 
